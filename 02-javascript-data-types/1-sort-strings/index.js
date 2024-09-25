@@ -5,5 +5,23 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = 'asc') {
+  const locales = ["ru", "en"];
+  const options = {sensitivity: "variant", caseFirst: "upper"};
+  let collator = new Intl.Collator(locales, options);
 
+  return Array.from(arr).sort((a, b) => {
+    if (param === 'asc') {
+      if (typeof a === 'string') {
+        return collator.compare(a, b);
+      } else {
+        return a > b ? 1 : -1;
+      }
+    } else {
+      if (typeof a === 'string') {
+        return collator.compare(b, a);
+      } else {
+        return a < b ? 1 : -1;
+      }
+    }
+  });
 }
