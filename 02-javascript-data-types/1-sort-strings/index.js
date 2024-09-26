@@ -7,21 +7,23 @@
 export function sortStrings(arr, param = 'asc') {
   const locales = ["ru", "en"];
   const options = {sensitivity: "variant", caseFirst: "upper"};
-  let collator = new Intl.Collator(locales, options);
+  const collator = new Intl.Collator(locales, options);
 
-  return Array.from(arr).sort((a, b) => {
-    if (param === 'asc') {
-      if (typeof a === 'string') {
-        return collator.compare(a, b);
-      } else {
-        return a > b ? 1 : -1;
-      }
+  const sortAsc = (a, b) => {
+    if (typeof a === 'string') {
+      return collator.compare(a, b);
     } else {
-      if (typeof a === 'string') {
-        return collator.compare(b, a);
-      } else {
-        return a < b ? 1 : -1;
-      }
+      return a > b ? 1 : -1;
     }
-  });
+  };
+
+  const sortDesc = (a, b) => {
+    if (typeof a === 'string') {
+      return collator.compare(b, a);
+    } else {
+      return a < b ? 1 : -1;
+    }
+  };
+
+  return [...arr].sort(param === 'asc' ? sortAsc : sortDesc);
 }
