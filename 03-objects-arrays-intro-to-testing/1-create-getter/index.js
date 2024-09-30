@@ -5,11 +5,10 @@
  */
 export function createGetter(path) {
   const keys = path.split('.');
-  let n = keys.length;
   return (obj) => {
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < keys.length; i++) {
       if (!obj.hasOwnProperty(keys[i])) {
-        return undefined;
+        return;
       }
       obj = obj[keys[i]];
     }
