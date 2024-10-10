@@ -1,26 +1,29 @@
 export default class SortableTable {
   element;
+  subElements = {};
+  sortState = {};
 
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = data;
     this.element = this.createElement();
+    this.selectSubElements();
   }
 
-  createSortArrow() {
-    return `
+  createSortArrow = () => `
       <span data-element="arrow" class="sortable-table__sort-arrow">
         <span class="sort-arrow"></span>
       </span>
     `;
-  }
 
   createTableHeader() {
     return `
       <div data-element="header" class="sortable-table__header sortable-table__row">
         ${this.headerConfig.map(item => `
-          <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}" data-order="asc">
+          <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}"
+           ${this.sortState.order && this.sortState.field === item.id ? 'data-order=' + this.sortState.order : ''}>
             <span>${item.title}</span>
+            ${this.sortState.field === item.id ? this.createSortArrow() : ''}
           </div>
         `).join('')}
       </div>
@@ -57,13 +60,31 @@ export default class SortableTable {
     return element;
   }
 
-  sort(fieldValue, orderValue) {
-
+  selectSubElements() {
+    this.element.querySelectorAll('[data-element]').forEach(element => {
+      this.subElements[element.dataset.element] = element;
+    });
   }
 
-  update(newData) {
-    this.data = newData;
-    this.element.innerHTML = this.createElement();
+  sort(fieldValue, orderValue) {
+    const locales = ["ru", "en"];
+    const options = {sensitivity: "variant", caseFirst: "upper", numeric: true};
+    const collator = new Intl.Collator(locales, options);
+
+    const ascFilter = (a, b) => collator.compare(a[fieldValue], b[fieldValue]);
+    const descFilter = (a, b) => collator.compare(b[fieldValue], a[fieldValue]);
+
+    this.data.sort(orderValue === 'asc' ? ascFilter : descFilter);
+    this.sortState = {
+      field: fieldValue,
+      order: orderValue,
+    };
+    this.update();
+  }
+
+  update() {
+    this.element.innerHTML = this.createElement().innerHTML;
+    this.selectSubElements();
   }
 
   remove() {
