@@ -34,19 +34,16 @@ export default class SortableTable {
     return `<div class="sortable-table__cell">${value}</div>`;
   }
 
-  createTableRowTemplate(data) {
-    return `
-    <a href="/products/3d-ochki-optoma-zd302" class="sortable-table__row">
-      ${this.headerConfig.map(item =>
-    item.template
-      ? item.template(data.images)
-      : this.createTableCellTemplate(data[item.id])
-  ).join('')}
-    </a>`;
-  }
-
   createTableRowsTemplate() {
-    return this.data.map(item => this.createTableRowTemplate(item)).join('');
+    return this.data.map(item => `
+      <a href="/products/3d-ochki-optoma-zd302" class="sortable-table__row">
+        ${this.headerConfig.map(column =>
+          column.template
+            ? column.template(item.images)
+            : this.createTableCellTemplate(item[column.id])
+        ).join('')}
+      </a>
+    `).join('');
   }
 
   createTableTemplate() {
