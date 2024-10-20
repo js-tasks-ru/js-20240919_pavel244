@@ -27,14 +27,14 @@ export default class SortableTable extends SortableTableV1 {
   }
 
   createListeners() {
-    this.subElements.header.addEventListener('pointerdown', this.handleHeaderClack);
+    this.subElements.header.addEventListener('pointerdown', this.handleHeaderClick);
   }
 
   removeListeners() {
-    this.subElements.header.removeEventListener('pointerdown', this.handleHeaderClack);
+    this.subElements.header.removeEventListener('pointerdown', this.handleHeaderClick);
   }
 
-  handleHeaderClack = (event) => {
+  handleHeaderClick = (event) => {
     const columnHeader = event.target.closest('.sortable-table__cell');
     if (columnHeader && columnHeader.dataset.sortable) {
       const order = columnHeader.dataset.order === 'desc' ? 'asc' : 'desc';
