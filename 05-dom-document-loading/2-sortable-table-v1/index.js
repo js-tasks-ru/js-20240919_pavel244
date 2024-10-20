@@ -10,27 +10,27 @@ export default class SortableTable {
     this.selectSubElements();
   }
 
-  createSortArrow = () => `
+  createSortArrowTemplate = () => `
       <span data-element="arrow" class="sortable-table__sort-arrow">
         <span class="sort-arrow"></span>
       </span>
     `;
 
-  createTableHeader() {
+  createTableHeaderTemplate() {
     return `
       <div data-element="header" class="sortable-table__header sortable-table__row">
         ${this.headerConfig.map(item => `
           <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}"
            ${this.sortState.order && this.sortState.field === item.id ? 'data-order=' + this.sortState.order : ''}>
             <span>${item.title}</span>
-            ${this.sortState.field === item.id ? this.createSortArrow() : ''}
+            ${this.sortState.field === item.id ? this.createSortArrowTemplate() : ''}
           </div>
         `).join('')}
       </div>
     `;
   }
 
-  createTableCell(value) {
+  createTableCellTemplate(value) {
     return `<div class="sortable-table__cell">${value}</div>`;
   }
 
@@ -40,14 +40,14 @@ export default class SortableTable {
       ${this.headerConfig.map(item =>
     item.template
       ? item.template(data.images)
-      : this.createTableCell(data[item.id])
+      : this.createTableCellTemplate(data[item.id])
   ).join('')}
     </a>`;
   }
 
-  createTableTemplate(data = this.data) {
+  createTableTemplateTemplate(data = this.data) {
     return `
-        ${this.createTableHeader()}
+        ${this.createTableHeaderTemplate()}
       <div data-element="body" class="sortable-table__body">
         ${data.map(item => this.createTableRow(item)).join('')}
       </div>
@@ -56,7 +56,7 @@ export default class SortableTable {
 
   createElement() {
     const element = document.createElement('div');
-    element.innerHTML = this.createTableTemplate();
+    element.innerHTML = this.createTableTemplateTemplate();
     return element;
   }
 
