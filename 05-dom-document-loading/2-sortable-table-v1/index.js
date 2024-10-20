@@ -34,7 +34,7 @@ export default class SortableTable {
     return `<div class="sortable-table__cell">${value}</div>`;
   }
 
-  createTableRow(data) {
+  createTableRowTemplate(data) {
     return `
     <a href="/products/3d-ochki-optoma-zd302" class="sortable-table__row">
       ${this.headerConfig.map(item =>
@@ -45,18 +45,22 @@ export default class SortableTable {
     </a>`;
   }
 
-  createTableTemplateTemplate(data = this.data) {
+  createTableRowsTemplate() {
+    return this.data.map(item => this.createTableRowTemplate(item)).join('');
+  }
+
+  createTableTemplate() {
     return `
         ${this.createTableHeaderTemplate()}
-      <div data-element="body" class="sortable-table__body">
-        ${data.map(item => this.createTableRow(item)).join('')}
-      </div>
+        <div data-element="body" class="sortable-table__body">
+            ${this.createTableRowsTemplate()}
+        </div>
     `;
   }
 
   createElement() {
     const element = document.createElement('div');
-    element.innerHTML = this.createTableTemplateTemplate();
+    element.innerHTML = this.createTableTemplate();
     return element;
   }
 
@@ -83,8 +87,7 @@ export default class SortableTable {
   }
 
   update() {
-    this.element.innerHTML = this.createElement().innerHTML;
-    this.selectSubElements();
+    this.subElements.body.innerHTML = this.createTableRowsTemplate();
   }
 
   remove() {
