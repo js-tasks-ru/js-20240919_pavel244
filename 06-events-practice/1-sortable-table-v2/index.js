@@ -10,7 +10,7 @@ export default class SortableTable extends SortableTableV1 {
     super(headersConfig, data);
 
     this.createListeners();
-    this.setArrowElement();
+    this.createArrowElement();
 
     if (sorted.id) {
       this.sort(sorted.id, sorted.order ? sorted.order : 'desc');
@@ -20,7 +20,7 @@ export default class SortableTable extends SortableTableV1 {
     }
   }
 
-  setArrowElement() {
+  createArrowElement() {
     const element = document.createElement("div");
     element.innerHTML = this.createSortArrowTemplate();
     this.arrowElement = element.firstElementChild;
