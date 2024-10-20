@@ -10,47 +10,48 @@ export default class SortableTable {
     this.selectSubElements();
   }
 
-  createSortArrow = () => `
+  createSortArrowTemplate = () => `
       <span data-element="arrow" class="sortable-table__sort-arrow">
         <span class="sort-arrow"></span>
       </span>
     `;
 
-  createTableHeader() {
+  createTableHeaderTemplate() {
     return `
       <div data-element="header" class="sortable-table__header sortable-table__row">
         ${this.headerConfig.map(item => `
           <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}"
            ${this.sortState.order && this.sortState.field === item.id ? 'data-order=' + this.sortState.order : ''}>
             <span>${item.title}</span>
-            ${this.sortState.field === item.id ? this.createSortArrow() : ''}
+            ${this.sortState.field === item.id ? this.createSortArrowTemplate() : ''}
           </div>
         `).join('')}
       </div>
     `;
   }
 
-  createTableCell(value) {
+  createTableCellTemplate(value) {
     return `<div class="sortable-table__cell">${value}</div>`;
   }
 
-  createTableRow(data) {
-    return `
-    <a href="/products/3d-ochki-optoma-zd302" class="sortable-table__row">
-      ${this.headerConfig.map(item =>
-    item.template
-      ? item.template(data.images)
-      : this.createTableCell(data[item.id])
-  ).join('')}
-    </a>`;
+  createTableRowsTemplate() {
+    return this.data.map(item => `
+      <a href="/products/3d-ochki-optoma-zd302" class="sortable-table__row">
+        ${this.headerConfig.map(column =>
+          column.template
+            ? column.template(item.images)
+            : this.createTableCellTemplate(item[column.id])
+        ).join('')}
+      </a>
+    `).join('');
   }
 
-  createTableTemplate(data = this.data) {
+  createTableTemplate() {
     return `
-        ${this.createTableHeader()}
-      <div data-element="body" class="sortable-table__body">
-        ${data.map(item => this.createTableRow(item)).join('')}
-      </div>
+        ${this.createTableHeaderTemplate()}
+        <div data-element="body" class="sortable-table__body">
+            ${this.createTableRowsTemplate()}
+        </div>
     `;
   }
 
@@ -83,8 +84,7 @@ export default class SortableTable {
   }
 
   update() {
-    this.element.innerHTML = this.createElement().innerHTML;
-    this.selectSubElements();
+    this.subElements.body.innerHTML = this.createTableRowsTemplate();
   }
 
   remove() {
