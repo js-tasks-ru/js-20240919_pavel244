@@ -40,7 +40,7 @@ export default class SortableTable extends SortableTableV1 {
       const order = columnHeader.dataset.order === 'desc' ? 'asc' : 'desc';
       columnHeader.dataset.order = order;
       this.sort(columnHeader.dataset.id, order);
-      columnHeader.insertAdjacentElement('beforeend', this.arrowElement);
+      columnHeader.appendChild(this.arrowElement);
     }
   };
 
