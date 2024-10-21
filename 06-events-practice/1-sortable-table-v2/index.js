@@ -14,9 +14,6 @@ export default class SortableTable extends SortableTableV1 {
 
     if (sorted.id) {
       this.sort(sorted.id, sorted.order ? sorted.order : 'desc');
-      const sortedColumnHeader = this.subElements.header.querySelector(`[data-id=${sorted.id}]`);
-      sortedColumnHeader.insertAdjacentElement('beforeend', this.arrowElement);
-      sortedColumnHeader.dataset.order = sorted.order;
     }
   }
 
@@ -24,6 +21,13 @@ export default class SortableTable extends SortableTableV1 {
     const element = document.createElement("div");
     element.innerHTML = this.createSortArrowTemplate();
     this.arrowElement = element.firstElementChild;
+  }
+
+  sort(column, order = 'desc') {
+    super.sort(column, order);
+    const sortedColumnHeader = this.subElements.header.querySelector(`[data-id=${column}]`);
+    sortedColumnHeader.appendChild(this.arrowElement);
+    sortedColumnHeader.dataset.order = order;
   }
 
   createListeners() {
@@ -40,12 +44,11 @@ export default class SortableTable extends SortableTableV1 {
       const order = columnHeader.dataset.order === 'desc' ? 'asc' : 'desc';
       columnHeader.dataset.order = order;
       this.sort(columnHeader.dataset.id, order);
-      columnHeader.appendChild(this.arrowElement);
     }
   };
 
-  remove() {
+  destroy() {
     this.removeListeners();
-    super.remove();
+    super.destroy();
   }
 }
