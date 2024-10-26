@@ -11,7 +11,7 @@ class Tooltip {
 
   initialize() {
     this.createElement();
-    this.createListeners();
+    this.createListener();
   }
 
   createElement() {
@@ -25,41 +25,43 @@ class Tooltip {
     document.body.appendChild(this.element);
   }
 
-  handlerPointerOver(event) {
+  handlerPointerOver = (event) => {
+    document.addEventListener('pointerout', this.handlerPointerOut);
+    document.addEventListener('pointermove', this.handlerPointerMove);
+
     const {target} = event;
     if (target.dataset.tooltip) {
       this.render(target.dataset.tooltip);
     }
   }
 
-  handlerPointerOut() {
+  handlerPointerOut = () => {
+    document.removeEventListener('pointerout', this.handlerPointerOut);
+    document.removeEventListener('pointermove', this.handlerPointerMove);
+
     if (this.element) {
       this.element.remove();
     }
   }
 
-  handlerPointerMove(event) {
+  handlerPointerMove = (event) => {
     if (event.target.dataset.tooltip) {
       this.element.style.top = event.clientY + 18 + 'px';
       this.element.style.left = event.clientX + 12 + 'px';
     }
   }
 
-  createListeners() {
-    document.addEventListener('pointerover', event => this.handlerPointerOver(event));
-    document.addEventListener('pointerout', event => this.handlerPointerOut(event));
-    document.addEventListener('pointermove', event => this.handlerPointerMove(event));
+  createListener() {
+    document.addEventListener('pointerover', this.handlerPointerOver);
   }
 
-  removeListeners() {
-    document.removeEventListener('pointerover', event => this.handlerPointerOver(event));
-    document.removeEventListener('pointerout', event => this.handlerPointerOut(event));
-    document.removeEventListener('pointermove', event => this.handlerPointerMove(event));
+  removeListener() {
+    document.removeEventListener('pointerover', this.handlerPointerOver);
   }
 
   destroy() {
     this.element.remove();
-    this.removeListeners();
+    this.removeListener();
   }
 }
 
